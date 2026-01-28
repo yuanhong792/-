@@ -40,6 +40,58 @@ const capabilityCards = [
     accent: 'from-violet-500 to-purple-400'
   }
 ];
+const personaOptions = [
+  {
+    id: 'builder',
+    name: '增长策划师',
+    description: '擅长获客路径与转化优化。',
+    avatar: 'https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80'
+  },
+  {
+    id: 'support',
+    name: '服务运营官',
+    description: '标准化客服话术与工单流转。',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80'
+  },
+  {
+    id: 'researcher',
+    name: '行业研究员',
+    description: '擅长结构化报告与洞察总结。',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80'
+  },
+  {
+    id: 'creator',
+    name: '内容导演',
+    description: '产出短视频脚本与营销内容。',
+    avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=120&q=80'
+  }
+];
+const knowledgeBases = [
+  {
+    name: '品牌手册 2024',
+    type: 'PDF · 126 页',
+    status: '已同步',
+    accent: 'bg-emerald-50 text-emerald-600'
+  },
+  {
+    name: 'FAQ 话术库',
+    type: '表格 · 2,480 条',
+    status: '持续更新',
+    accent: 'bg-indigo-50 text-indigo-600'
+  },
+  {
+    name: '渠道增长策略',
+    type: 'Notion · 18 篇',
+    status: '待发布',
+    accent: 'bg-orange-50 text-orange-600'
+  }
+];
+const modelOptions = [
+  { id: 'glm', name: 'GLM-4 Turbo', desc: '适合复杂推理', badge: '国内' },
+  { id: 'qwen', name: '通义千问 MAX', desc: '长文本分析', badge: '国内' },
+  { id: 'gpt4o', name: 'GPT-4o', desc: '多模态旗舰', badge: '海外' },
+  { id: 'claude', name: 'Claude 3.5', desc: '写作与代码', badge: '海外' }
+];
 const agentCards = [
   {
     title: '朋友圈互动王',
@@ -81,6 +133,8 @@ const agentCards = [
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState(categoryTabs[0]);
+  const [selectedPersona, setSelectedPersona] = useState(personaOptions[0].id);
+  const [selectedModel, setSelectedModel] = useState(modelOptions[0].id);
   const modelSections = useMemo(() => Object.entries(modelGroups), []);
 
   return (
@@ -162,6 +216,130 @@ const App: React.FC = () => {
               </div>
             </div>
             <div className="hidden lg:block absolute right-10 bottom-0 w-72 h-48 bg-white/60 rounded-3xl border border-white/50 shadow-lg"></div>
+          </div>
+        </section>
+
+        <section className="px-6 lg:px-10">
+          <div className="grid lg:grid-cols-[1.2fr_1fr] gap-6">
+            <div className="bg-white rounded-3xl border border-slate-100 p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold">智能体镜像工坊</h2>
+                  <p className="text-xs text-slate-400">配置提示词、知识库与模型路由</p>
+                </div>
+                <button className="text-xs text-indigo-500">保存为模板</button>
+              </div>
+              <div className="mt-5 space-y-5">
+                <div className="bg-slate-50 rounded-2xl p-4">
+                  <div className="flex items-center justify-between text-xs text-slate-400">
+                    <span>角色提示词</span>
+                    <span>建议 120-240 字</span>
+                  </div>
+                  <textarea
+                    className="mt-3 w-full bg-transparent text-sm text-slate-700 outline-none resize-none"
+                    rows={4}
+                    placeholder="例如：你是一个负责企业增长的策略助手，需要根据产品生命周期输出渠道组合与行动清单。"
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-700 mb-3">模型路由</p>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {modelOptions.map((model) => (
+                      <button
+                        key={model.id}
+                        onClick={() => setSelectedModel(model.id)}
+                        className={`text-left border rounded-2xl px-4 py-3 transition ${
+                          selectedModel === model.id
+                            ? 'border-indigo-500 bg-indigo-50'
+                            : 'border-slate-200 hover:border-indigo-200'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-semibold text-slate-800">{model.name}</p>
+                          <span className="text-[10px] px-2 py-1 rounded-full bg-slate-100 text-slate-500">
+                            {model.badge}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 mt-1">{model.desc}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-700 mb-3">知识库</p>
+                  <div className="space-y-3">
+                    {knowledgeBases.map((kb) => (
+                      <div
+                        key={kb.name}
+                        className="flex items-center justify-between border border-slate-200 rounded-2xl px-4 py-3"
+                      >
+                        <div>
+                          <p className="text-sm font-semibold text-slate-800">{kb.name}</p>
+                          <p className="text-xs text-slate-400 mt-1">{kb.type}</p>
+                        </div>
+                        <span className={`text-[10px] px-2 py-1 rounded-full ${kb.accent}`}>{kb.status}</span>
+                      </div>
+                    ))}
+                    <button className="w-full border border-dashed border-slate-300 rounded-2xl px-4 py-3 text-xs text-slate-400">
+                      + 上传知识库 / 连接网页
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="bg-white rounded-3xl border border-slate-100 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-base font-semibold text-slate-900">头像与身份</h3>
+                    <p className="text-xs text-slate-400">可一键生成专属头像</p>
+                  </div>
+                  <button className="text-xs text-indigo-500">AI生成</button>
+                </div>
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  {personaOptions.map((persona) => (
+                    <button
+                      key={persona.id}
+                      onClick={() => setSelectedPersona(persona.id)}
+                      className={`border rounded-2xl p-3 text-left transition ${
+                        selectedPersona === persona.id
+                          ? 'border-indigo-500 bg-indigo-50'
+                          : 'border-slate-200 hover:border-indigo-200'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={persona.avatar}
+                          alt={persona.name}
+                          className="w-12 h-12 rounded-2xl object-cover"
+                        />
+                        <div>
+                          <p className="text-sm font-semibold text-slate-800">{persona.name}</p>
+                          <p className="text-xs text-slate-400 mt-1">{persona.description}</p>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-white rounded-3xl border border-slate-100 p-6">
+                <h3 className="text-base font-semibold text-slate-900">发布预览</h3>
+                <p className="text-xs text-slate-400 mt-1">自动生成多渠道发布包</p>
+                <div className="mt-4 space-y-3">
+                  {['网页小组件', '企微机器人', 'App 内嵌'].map((item) => (
+                    <div
+                      key={item}
+                      className="flex items-center justify-between bg-slate-50 rounded-2xl px-4 py-3"
+                    >
+                      <span className="text-sm text-slate-600">{item}</span>
+                      <span className="text-[10px] px-2 py-1 rounded-full bg-white text-slate-400">待配置</span>
+                    </div>
+                  ))}
+                </div>
+                <Button className="mt-5 w-full text-sm">生成发布包</Button>
+              </div>
+            </div>
           </div>
         </section>
 
