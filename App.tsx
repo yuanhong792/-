@@ -135,7 +135,10 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState(categoryTabs[0]);
   const [selectedPersona, setSelectedPersona] = useState(personaOptions[0].id);
   const [selectedModel, setSelectedModel] = useState(modelOptions[0].id);
+  const [promptText, setPromptText] = useState('');
   const modelSections = useMemo(() => Object.entries(modelGroups), []);
+  const selectedPersonaData = personaOptions.find((persona) => persona.id === selectedPersona);
+  const selectedModelData = modelOptions.find((model) => model.id === selectedModel);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex">
@@ -239,6 +242,8 @@ const App: React.FC = () => {
                     className="mt-3 w-full bg-transparent text-sm text-slate-700 outline-none resize-none"
                     rows={4}
                     placeholder="例如：你是一个负责企业增长的策略助手，需要根据产品生命周期输出渠道组合与行动清单。"
+                    value={promptText}
+                    onChange={(event) => setPromptText(event.target.value)}
                   />
                 </div>
                 <div>
@@ -336,6 +341,48 @@ const App: React.FC = () => {
                       <span className="text-[10px] px-2 py-1 rounded-full bg-white text-slate-400">待配置</span>
                     </div>
                   ))}
+                </div>
+                <div className="mt-5 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                  <p className="text-xs font-semibold text-slate-500">实时预览</p>
+                  <div className="mt-3 flex items-start gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center overflow-hidden">
+                      {selectedPersonaData ? (
+                        <img
+                          src={selectedPersonaData.avatar}
+                          alt={selectedPersonaData.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : null}
+                    </div>
+                    <div className="flex-1 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-semibold text-slate-800">
+                            {selectedPersonaData?.name ?? '未选择身份'}
+                          </p>
+                          <p className="text-xs text-slate-400">{selectedPersonaData?.description}</p>
+                        </div>
+                        <span className="text-[10px] px-2 py-1 rounded-full bg-white text-slate-400">
+                          {selectedModelData?.name ?? '未选择模型'}
+                        </span>
+                      </div>
+                      <div className="text-xs text-slate-500 bg-white rounded-2xl p-3">
+                        {promptText.trim().length > 0
+                          ? promptText
+                          : '这里会展示你填写的提示词内容，方便快速预览智能体镜像效果。'}
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {knowledgeBases.map((kb) => (
+                          <span
+                            key={kb.name}
+                            className="text-[10px] px-2 py-1 rounded-full bg-white text-slate-400"
+                          >
+                            {kb.name}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <Button className="mt-5 w-full text-sm">生成发布包</Button>
               </div>
