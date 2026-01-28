@@ -1,0 +1,8 @@
+{
+  "name": "OmniAgent Creator",
+  "description": "A sleek, powerful platform to build, customize, and chat with AI agents powered by Gemini. Features avatar generation, knowledge base support, and advanced model configuration.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
