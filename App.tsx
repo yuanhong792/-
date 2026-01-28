@@ -139,6 +139,14 @@ const App: React.FC = () => {
   const modelSections = useMemo(() => Object.entries(modelGroups), []);
   const selectedPersonaData = personaOptions.find((persona) => persona.id === selectedPersona);
   const selectedModelData = modelOptions.find((model) => model.id === selectedModel);
+  const setupSteps = [
+    { name: '模型API配置与管理', status: 'done' },
+    { name: '提示词编辑器', status: 'done' },
+    { name: '知识库管理', status: 'inProgress' },
+    { name: '头像设置', status: 'pending' },
+    { name: '智能体展示与对话', status: 'pending' },
+    { name: '发布与部署', status: 'pending' }
+  ];
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex">
@@ -232,6 +240,33 @@ const App: React.FC = () => {
                 </div>
                 <button className="text-xs text-indigo-500">保存为模板</button>
               </div>
+              <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-800">当前进度 3/6</p>
+                    <p className="text-xs text-slate-400">按步骤完成配置，确保可发布预览</p>
+                  </div>
+                  <span className="text-xs text-indigo-500">开发核心功能</span>
+                </div>
+                <div className="mt-3 space-y-2 text-xs text-slate-500">
+                  {setupSteps.map((step) => (
+                    <div key={step.name} className="flex items-center gap-2">
+                      <span
+                        className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] ${
+                          step.status === 'done'
+                            ? 'bg-emerald-500 border-emerald-500 text-white'
+                            : step.status === 'inProgress'
+                              ? 'border-indigo-500 text-indigo-500'
+                              : 'border-slate-300 text-slate-300'
+                        }`}
+                      >
+                        {step.status === 'done' ? '✓' : step.status === 'inProgress' ? '…' : '○'}
+                      </span>
+                      <span>{step.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
               <div className="mt-5 space-y-5">
                 <div className="bg-slate-50 rounded-2xl p-4">
                   <div className="flex items-center justify-between text-xs text-slate-400">
@@ -247,7 +282,8 @@ const App: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-slate-700 mb-3">模型路由</p>
+                  <p className="text-sm font-semibold text-slate-700 mb-1">模型路由</p>
+                  <p className="text-xs text-slate-400 mb-3">按场景选择国内或海外模型</p>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {modelOptions.map((model) => (
                       <button
@@ -271,7 +307,8 @@ const App: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-slate-700 mb-3">知识库</p>
+                  <p className="text-sm font-semibold text-slate-700 mb-1">知识库</p>
+                  <p className="text-xs text-slate-400 mb-3">上传文档或连接网页作为知识来源</p>
                   <div className="space-y-3">
                     {knowledgeBases.map((kb) => (
                       <div
@@ -298,7 +335,7 @@ const App: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-base font-semibold text-slate-900">头像与身份</h3>
-                    <p className="text-xs text-slate-400">可一键生成专属头像</p>
+                    <p className="text-xs text-slate-400">选择一个角色形象，后续可AI生成</p>
                   </div>
                   <button className="text-xs text-indigo-500">AI生成</button>
                 </div>
@@ -330,7 +367,7 @@ const App: React.FC = () => {
               </div>
               <div className="bg-white rounded-3xl border border-slate-100 p-6">
                 <h3 className="text-base font-semibold text-slate-900">发布预览</h3>
-                <p className="text-xs text-slate-400 mt-1">自动生成多渠道发布包</p>
+                <p className="text-xs text-slate-400 mt-1">汇总配置结果，生成展示页面</p>
                 <div className="mt-4 space-y-3">
                   {['网页小组件', '企微机器人', 'App 内嵌'].map((item) => (
                     <div
