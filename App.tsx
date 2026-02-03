@@ -1,253 +1,260 @@
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import { Button } from './components/Button';
 
-const modelGroups = {
-  '国内模型': [
-    { name: '通义千问', vendor: '阿里云', tag: '文本/多模态' },
-    { name: '文心一言', vendor: '百度', tag: '企业级' },
-    { name: '讯飞星火', vendor: '科大讯飞', tag: '知识增强' },
-    { name: 'GLM-4', vendor: '智谱', tag: '推理' },
-    { name: 'DeepSeek', vendor: '深度求索', tag: '长上下文' }
-  ],
-  '海外模型': [
-    { name: 'ChatGPT-4o', vendor: 'OpenAI', tag: '旗舰' },
-    { name: 'Gemini 1.5', vendor: 'Google', tag: '多模态' },
-    { name: 'Claude 3.5', vendor: 'Anthropic', tag: '代码/写作' },
-    { name: 'Llama 3.1', vendor: 'Meta', tag: '开源' }
-  ]
-};
-
-const categoryTabs = ['全部', '增长获客', '营销内容', '客服支持', '企业管理', '研发协作'];
-const capabilityCards = [
+const sidebarSections = [
   {
-    title: '智能体搭建',
-    description: '拖拽式编排、角色设定、工具调用，10分钟完成落地。',
-    accent: 'from-indigo-500 to-sky-400'
+    title: '欢迎使用',
+    icon: '🏠',
+    items: [
+      { label: '欢迎使用', active: true },
+      { label: '智能客服配置' },
+      { label: '常见问题与回答' },
+      { label: '关键词触发回复' },
+      { label: '商品信息库' }
+    ]
   },
   {
-    title: '多模型路由',
-    description: '国内+海外模型一站聚合，按成本/能力智能切换。',
-    accent: 'from-emerald-500 to-cyan-400'
+    title: '微信管理',
+    icon: '💬',
+    items: [
+      { label: '系统配置管理' },
+      { label: '微信账号配置' },
+      { label: '消息管理' },
+      { label: '群组管理' },
+      { label: '消息群发' },
+      { label: '自动添加群好友' },
+      { label: '统计分析' },
+      { label: '文件上传管理' }
+    ]
   },
   {
-    title: '知识库接入',
-    description: '支持文档、网页、表格快速入库，闭环私域知识。',
-    accent: 'from-orange-400 to-rose-400'
+    title: '企业微信管理',
+    icon: '🏢',
+    items: [{ label: '企业微信账号' }, { label: '企业侧消息' }]
   },
   {
-    title: '安全与合规',
-    description: '权限分级、日志审计、数据脱敏，满足企业合规。',
-    accent: 'from-violet-500 to-purple-400'
+    title: '大模型设置',
+    icon: '🧠',
+    items: [{ label: '模型配置' }, { label: 'API设置' }]
+  },
+  {
+    title: '账户与权限',
+    icon: '👤',
+    items: [{ label: '账号管理' }, { label: '角色权限' }]
   }
 ];
-const agentCards = [
+
+const quickCards = [
   {
-    title: '朋友圈互动王',
-    description: '自动生成互动文案，提升客户参与度。',
-    role: '私域运营',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80'
+    title: '智能客服配置',
+    description: '配置FAQ、关键词触发、商品信息等智能回复能力。',
+    actions: ['开始配置']
   },
   {
-    title: '竞品洞察官',
-    description: '抓取竞品动态，生成对比分析与策略建议。',
-    role: '市场洞察',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80'
+    title: '微信管理',
+    description: '管理微信账号、消息、群组等核心功能模块。',
+    actions: ['系统配置', '群组管理']
   },
   {
-    title: '爆款脚本拆解师',
-    description: '拆解短视频脚本结构，输出可执行脚本。',
-    role: '内容创意',
-    avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=120&q=80'
-  },
-  {
-    title: '会议纪要官',
-    description: '语音转写+行动项提取，一键沉淀会议结论。',
-    role: '办公效率',
-    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=120&q=80'
-  },
-  {
-    title: '企业知识管家',
-    description: 'FAQ知识库自动更新，客服知识随问随用。',
-    role: '企业助手',
-    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80'
-  },
-  {
-    title: '全域运营策划师',
-    description: '生成活动策划与执行节奏，拉动转化。',
-    role: '营销策划',
-    avatar: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=120&q=80'
+    title: '大模型设置',
+    description: '配置AI大模型参数与fallback策略。',
+    actions: ['配置模型']
   }
+];
+
+const featureCards = [
+  {
+    title: 'AI私信和群聊回复',
+    description:
+      '设置AI回复API并测试通过后，在【AI聊天】菜单开启自动回复。开启后避免键盘鼠标操作干扰。',
+    tag: '默认关闭'
+  },
+  {
+    title: 'AI朋友圈评论点赞',
+    description: '内置AI能力，首页进入“朋友圈”选择评论数量与范围即可启动。',
+    tag: '自动执行'
+  },
+  {
+    title: '私聊群发',
+    description: '需完成群数据库初始化（约1-10分钟），按菜单提示操作后使用。',
+    tag: '可配置'
+  },
+  {
+    title: '群聊群发',
+    description: '完成好友数据库初始化，并在设置中配置触发关键词。',
+    tag: '可配置'
+  },
+  {
+    title: '自动加好友/接受好友',
+    description: '在对应菜单内按提示设置策略即可执行。',
+    tag: '自动化'
+  },
+  {
+    title: '企业场景数字员工',
+    description: '支持公司内外事务自动化处理，形成多能力数字员工矩阵。',
+    tag: '企业级'
+  }
+];
+
+const highlights = [
+  '完全合法的Windows版微信机器人，核心使用RPA技术。',
+  '支持标准LLM接口，兼容 DeepSeek API / Gemini API。',
+  '自动加好友、批量发送、朋友圈AI评论点赞等全功能覆盖。',
+  '可作为企业数字员工或个人贴身助理。'
 ];
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState(categoryTabs[0]);
-  const modelSections = useMemo(() => Object.entries(modelGroups), []);
-
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex">
-      <aside className="w-20 lg:w-64 bg-white border-r border-slate-200 flex flex-col">
-        <div className="flex items-center gap-3 px-4 py-5 border-b border-slate-100">
-          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold">AI</div>
-          <div className="hidden lg:block">
-            <p className="text-sm font-semibold">极石智能体平台</p>
-            <p className="text-xs text-slate-400">多模型中枢</p>
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex">
+      <aside className="w-64 bg-white border-r border-slate-200 flex flex-col">
+        <div className="px-5 py-4 border-b border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500 text-white font-bold flex items-center justify-center">
+              冰
+            </div>
+            <div>
+              <p className="font-semibold text-sm">冰石微信智能客服系统</p>
+              <p className="text-xs text-slate-400">RPA + AI 全栈能力</p>
+            </div>
           </div>
         </div>
-        <nav className="flex-1 px-2 py-4 space-y-2">
-          {['首页', 'AI问答', '智能体中心', '训练中心', '企业知识库', '用量监控'].map((item) => (
-            <button
-              key={item}
-              className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition ${
-                item === '智能体中心' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:bg-slate-100'
-              }`}
-            >
-              <span className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-[10px]">●</span>
-              <span className="hidden lg:inline">{item}</span>
-            </button>
+        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
+          {sidebarSections.map((section) => (
+            <div key={section.title}>
+              <p className="text-xs text-slate-400 px-2 mb-2 flex items-center gap-2">
+                <span>{section.icon}</span>
+                {section.title}
+              </p>
+              <div className="space-y-1">
+                {section.items.map((item) => (
+                  <button
+                    key={item.label}
+                    className={`w-full text-left px-3 py-2 rounded-xl text-sm ${
+                      item.active ? 'bg-emerald-50 text-emerald-600' : 'text-slate-600 hover:bg-slate-100'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
-        </nav>
-        <div className="px-4 pb-4 hidden lg:block">
-          <div className="bg-slate-50 rounded-2xl p-4">
-            <p className="text-xs text-slate-400">已接入模型</p>
-            <p className="text-2xl font-bold text-slate-900">18+</p>
-            <Button className="mt-3 w-full text-sm">升级企业版</Button>
+        </div>
+        <div className="px-4 pb-4">
+          <div className="bg-slate-50 rounded-2xl p-4 text-xs text-slate-500">
+            已连接AI模型
+            <p className="text-lg font-semibold text-slate-900 mt-1">7 个</p>
+            <Button className="mt-3 w-full text-sm" variant="secondary">
+              查看接口状态
+            </Button>
           </div>
         </div>
       </aside>
 
       <main className="flex-1 flex flex-col">
         <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6">
-          <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-xs text-slate-500">
-              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-              全部模型正常
-            </div>
-            <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-xs text-indigo-600">
-              今日调用 12,980 次
-            </div>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-slate-400">首页 / 欢迎使用</span>
           </div>
           <div className="flex items-center gap-3">
-            <button className="px-3 py-1 rounded-full bg-slate-100 text-xs text-slate-500">多租户</button>
-            <button className="px-3 py-1 rounded-full bg-indigo-600 text-xs text-white">开启会员</button>
-            <div className="w-9 h-9 rounded-full bg-slate-200"></div>
+            <button className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+              🔔
+            </button>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-slate-200"></div>
+              <div>
+                <p className="text-sm font-semibold">系统管理员</p>
+                <p className="text-xs text-slate-400">企业版</p>
+              </div>
+            </div>
           </div>
         </header>
 
-        <section className="px-6 py-6 lg:px-10">
-          <div className="bg-gradient-to-r from-sky-100 via-indigo-100 to-purple-100 rounded-3xl p-8 lg:p-12 relative overflow-hidden">
-            <div className="max-w-2xl relative z-10">
-              <p className="text-sm font-semibold text-indigo-600 mb-2">企业级智能体操作系统</p>
-              <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 leading-tight">
-                AI不是工具，是你的合伙人
-              </h1>
-              <p className="text-sm text-slate-500 mt-4">
-                一站接入国内外顶级大模型，支持低代码智能体搭建、知识库管理与多端部署。
-              </p>
-              <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                <div className="flex-1 bg-white rounded-2xl px-4 py-3 border border-slate-200 flex items-center gap-2">
-                  <span className="text-slate-400 text-sm">🔍</span>
-                  <input
-                    className="flex-1 text-sm outline-none"
-                    placeholder="搜索智能体 / 业务场景 / 模型"
-                  />
-                </div>
-                <Button className="rounded-2xl px-6">创建智能体</Button>
+        <section className="px-6 py-6">
+          <div className="bg-gradient-to-r from-slate-100 via-slate-50 to-slate-100 rounded-3xl border border-slate-200 p-8">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-full border-4 border-emerald-500 text-emerald-500 flex items-center justify-center text-xl">
+                ✓
               </div>
-              <div className="mt-6 flex flex-wrap gap-2">
-                {['智能体', 'AI绘画', 'AI文案', 'AI视频'].map((tag) => (
-                  <span key={tag} className="px-3 py-1 rounded-full bg-white/60 text-xs text-slate-600">
-                    {tag}
-                  </span>
-                ))}
+              <div>
+                <h1 className="text-2xl font-semibold">欢迎使用 冰石微信智能客服系统</h1>
+                <p className="text-sm text-slate-500 mt-1">个人微信已连接，连接的微信账号昵称：墨涵舞</p>
               </div>
             </div>
-            <div className="hidden lg:block absolute right-10 bottom-0 w-72 h-48 bg-white/60 rounded-3xl border border-white/50 shadow-lg"></div>
-          </div>
-        </section>
-
-        <section className="px-6 lg:px-10">
-          <div className="flex flex-wrap gap-3 mb-6">
-            {categoryTabs.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition ${
-                  activeTab === tab ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-500'
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-
-          <div className="grid lg:grid-cols-[1.3fr_1fr] gap-6">
-            <div className="bg-white rounded-3xl border border-slate-100 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="text-lg font-semibold">模型生态</h2>
-                  <p className="text-xs text-slate-400">支持多模型路由与成本控制</p>
-                </div>
-                <button className="text-xs text-indigo-500">查看全部</button>
-              </div>
-              <div className="space-y-4">
-                {modelSections.map(([title, items]) => (
-                  <div key={title}>
-                    <p className="text-xs font-semibold text-slate-500 mb-2">{title}</p>
-                    <div className="grid sm:grid-cols-2 gap-3">
-                      {items.map((model) => (
-                        <div
-                          key={model.name}
-                          className="border border-slate-200 rounded-2xl px-4 py-3 flex items-center justify-between"
-                        >
-                          <div>
-                            <p className="text-sm font-semibold text-slate-800">{model.name}</p>
-                            <p className="text-xs text-slate-400">{model.vendor}</p>
-                          </div>
-                          <span className="text-[10px] px-2 py-1 rounded-full bg-slate-100 text-slate-500">
-                            {model.tag}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
+            <div className="mt-6 grid lg:grid-cols-3 gap-4">
+              {quickCards.map((card) => (
+                <div key={card.title} className="bg-white rounded-2xl border border-slate-200 p-5">
+                  <h3 className="font-semibold text-slate-900">{card.title}</h3>
+                  <p className="text-xs text-slate-500 mt-2">{card.description}</p>
+                  <div className="mt-4 flex gap-2 flex-wrap">
+                    {card.actions.map((action) => (
+                      <Button key={action} variant="secondary" className="text-xs px-3 py-1">
+                        {action}
+                      </Button>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              {capabilityCards.map((card) => (
-                <div key={card.title} className="bg-white rounded-3xl border border-slate-100 p-5">
-                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${card.accent} mb-3`}></div>
-                  <h3 className="text-base font-semibold text-slate-900">{card.title}</h3>
-                  <p className="text-xs text-slate-500 mt-1">{card.description}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="px-6 py-8 lg:px-10">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-lg font-semibold">热门智能体</h2>
-              <p className="text-xs text-slate-400">覆盖营销、客服、研发等场景</p>
-            </div>
-            <button className="text-xs text-indigo-500">查看全部</button>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {agentCards.map((agent) => (
-              <div key={agent.title} className="bg-white border border-slate-100 rounded-3xl p-5 flex flex-col">
-                <div className="flex items-center gap-3">
-                  <img src={agent.avatar} alt={agent.title} className="w-12 h-12 rounded-2xl object-cover" />
-                  <div>
-                    <p className="text-sm font-semibold text-slate-800">{agent.title}</p>
-                    <p className="text-xs text-slate-400">{agent.role}</p>
-                  </div>
+        <section className="px-6 pb-6">
+          <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-6">
+            <div className="bg-white rounded-3xl border border-slate-200 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-lg font-semibold">功能说明</h2>
+                  <p className="text-xs text-slate-400">AI + RPA 全场景自动化</p>
                 </div>
-                <p className="text-xs text-slate-500 mt-4 flex-1">{agent.description}</p>
-                <Button className="mt-4 h-9 text-sm">开始对话</Button>
+                <Button variant="secondary" className="text-xs px-3 py-1">
+                  查看配置手册
+                </Button>
               </div>
-            ))}
+              <div className="grid md:grid-cols-2 gap-4">
+                {featureCards.map((item) => (
+                  <div key={item.title} className="border border-slate-200 rounded-2xl p-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-semibold text-slate-800">{item.title}</h3>
+                      <span className="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                        {item.tag}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-2 leading-relaxed">{item.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="bg-white rounded-3xl border border-slate-200 p-6">
+                <h3 className="text-base font-semibold">系统亮点</h3>
+                <ul className="mt-4 space-y-3 text-sm text-slate-600">
+                  {highlights.map((item) => (
+                    <li key={item} className="flex gap-2">
+                      <span className="text-emerald-500">●</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="bg-white rounded-3xl border border-slate-200 p-6">
+                <h3 className="text-base font-semibold">快捷操作</h3>
+                <div className="mt-4 grid grid-cols-2 gap-3 text-xs">
+                  {['关键词触发回复', '微信管理', '个人设置', '朋友圈评论', '群发任务', '模型调用'].map((item) => (
+                    <Button key={item} variant="secondary" className="justify-start">
+                      {item}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-white rounded-3xl border border-slate-200 p-6">
+                <h3 className="text-base font-semibold">安全与合规</h3>
+                <p className="text-xs text-slate-500 mt-3 leading-relaxed">
+                  核心采用RPA驱动方式，无侵入、合规可控；支持权限与日志审计，适配企业级部署。
+                </p>
+              </div>
+            </div>
           </div>
         </section>
       </main>
