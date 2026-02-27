@@ -83,6 +83,31 @@ const runtimeFlow = [
   '⑤ pyautogui 执行粘贴、延迟、发送，完成拟人化回复。'
 ];
 
+
+const keywordReplyRules = [
+  {
+    keyword: '发资料',
+    type: '文字 + 图片',
+    response: '已为你整理资料清单，先发说明，再发配图。'
+  },
+  {
+    keyword: '看演示',
+    type: '视频',
+    response: '自动发送产品演示视频，并附带关键时间点说明。'
+  },
+  {
+    keyword: '价格',
+    type: '知识库问答',
+    response: '从知识库检索最新报价与优惠策略，生成简洁回复。'
+  }
+];
+
+const knowledgeBaseOverview = [
+  { label: '知识库文档', value: '236' },
+  { label: '图片素材', value: '58' },
+  { label: '视频素材', value: '12' }
+];
+
 const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#f5f6f8] text-slate-900 flex">
@@ -221,6 +246,34 @@ const App: React.FC = () => {
                     </li>
                   ))}
                 </ul>
+              </div>
+
+              <div className="bg-white rounded-3xl border border-[#e9ecef] p-6 shadow-[0_6px_20px_rgba(15,23,42,0.03)]">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold">关键词回复</h3>
+                  <span className="text-[10px] text-[#07c160] bg-[#e9f9ef] px-2 py-1 rounded-full border border-[#b8ebcb]">
+                    文字/图片/视频/知识库
+                  </span>
+                </div>
+                <div className="mt-4 space-y-3">
+                  {keywordReplyRules.map((rule) => (
+                    <div key={rule.keyword} className="rounded-2xl border border-[#edf0f4] bg-[#fafbfc] p-3">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium text-slate-800">关键词：{rule.keyword}</p>
+                        <span className="text-[10px] text-slate-500">{rule.type}</span>
+                      </div>
+                      <p className="text-xs text-slate-500 mt-1">{rule.response}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 grid grid-cols-3 gap-2">
+                  {knowledgeBaseOverview.map((item) => (
+                    <div key={item.label} className="rounded-xl border border-[#edf0f4] bg-[#f7f8fa] p-2 text-center">
+                      <p className="text-[10px] text-slate-500">{item.label}</p>
+                      <p className="text-sm font-semibold text-slate-800 mt-1">{item.value}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
               <div className="bg-white rounded-3xl border border-[#e9ecef] p-6 shadow-[0_6px_20px_rgba(15,23,42,0.03)]">
                 <h3 className="text-base font-semibold">启动策略</h3>
