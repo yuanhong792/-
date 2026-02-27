@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button } from './components/Button';
 
 const sidebarSections = [
@@ -83,48 +83,92 @@ const runtimeFlow = [
   '⑤ pyautogui 执行粘贴、延迟、发送，完成拟人化回复。'
 ];
 
-
-const keywordReplyRules = [
-  {
-    keyword: '发资料',
-    type: '文字 + 图片',
-    response: '已为你整理资料清单，先发说明，再发配图。'
-  },
-  {
-    keyword: '看演示',
-    type: '视频',
-    response: '自动发送产品演示视频，并附带关键时间点说明。'
-  },
-  {
-    keyword: '价格',
-    type: '知识库问答',
-    response: '从知识库检索最新报价与优惠策略，生成简洁回复。'
-  }
+const fallbackKeywordRules = [
+  { keyword: '发资料', type: '文字 + 图片', response: '已为你整理资料清单，先发说明，再发配图。' },
+  { keyword: '看演示', type: '视频', response: '自动发送产品演示视频，并附带关键时间点说明。' },
+  { keyword: '价格', type: '知识库问答', response: '从知识库检索最新报价与优惠策略，生成简洁回复。' }
 ];
 
-const knowledgeBaseOverview = [
+const fallbackKnowledgeOverview = [
   { label: '知识库文档', value: '236' },
   { label: '图片素材', value: '58' },
   { label: '视频素材', value: '12' }
 ];
 
-
-const tableActions = [
-  '上传关键词表格',
-  '导出关键词表格',
-  '上传知识库表格',
-  '导出知识库表格'
-];
-
-const modelConfigItems = [
-  { label: '模型提供方', value: '豆包 Vision Pro + Chat' },
-  { label: 'API Key', value: '已配置（可轮换）' },
-  { label: '提示词模板', value: '3 套（客服/销售/运营）' }
-];
+const fallbackModelConfig = {
+  provider: '豆包 Vision Pro + Chat',
+  apiKeyStatus: '未配置',
+  promptTemplates: '0 套'
+};
 
 const promptRules = ['禁用夸张语气词', '禁用连续表情', '保留简洁口语风格'];
 
 const App: React.FC = () => {
+  const [keywordRules, setKeywordRules] = useState(fallbackKeywordRules);
+  const [knowledgeBaseOverview, setKnowledgeBaseOverview] = useState(fallbackKnowledgeOverview);
+  const [modelConfig, setModelConfig] = useState(fallbackModelConfig);
+
+  const hasDesktopApi = Boolean(window.botAPI);
+
+  useEffect(() => {
+    const init = async () => {
+      if (!window.botAPI) return;
+      const config = await window.botAPI.loadConfig();
+      setKeywordRules(config.keywordRules);
+      setKnowledgeBaseOverview(config.knowledgeBaseOverview);
+      setModelConfig(config.modelConfig);
+    };
+    init();
+  }, []);
+
+  const modelConfigItems = useMemo(
+    () => [
+      { label: '模型提供方', value: modelConfig.provider },
+      { label: 'API Key', value: modelConfig.apiKeyStatus },
+      { label: '提示词模板', value: modelConfig.promptTemplates }
+    ],
+    [modelConfig]
+  );
+
+  const tableActions = [
+    {
+      label: '上传关键词表格',
+      onClick: async () => {
+        if (!window.botAPI) return;
+        const config = await window.botAPI.importKeywordCsv();
+        setKeywordRules(config.keywordRules);
+      }
+    },
+    {
+      label: '导出关键词表格',
+      onClick: async () => {
+        if (!window.botAPI) return;
+        await window.botAPI.exportKeywordCsv();
+      }
+    },
+    {
+      label: '上传知识库表格',
+      onClick: async () => {
+        if (!window.botAPI) return;
+        const config = await window.botAPI.importKnowledgeCsv();
+        setKnowledgeBaseOverview(config.knowledgeBaseOverview);
+      }
+    },
+    {
+      label: '导出知识库表格',
+      onClick: async () => {
+        if (!window.botAPI) return;
+        await window.botAPI.exportKnowledgeCsv();
+      }
+    }
+  ];
+
+  const updateModelConfig = async (patch: Partial<typeof fallbackModelConfig>) => {
+    if (!window.botAPI) return;
+    const config = await window.botAPI.updateModelConfig(patch);
+    setModelConfig(config.modelConfig);
+  };
+
   return (
     <div className="min-h-screen bg-[#f5f6f8] text-slate-900 flex">
       <aside className="w-72 bg-white border-r border-[#e9ecef] flex flex-col">
@@ -170,6 +214,7 @@ const App: React.FC = () => {
             <Button className="mt-3 w-full text-sm" variant="secondary">
               查看运行日志
             </Button>
+            {!hasDesktopApi && <p className="mt-3 text-[10px] text-amber-500">当前为 Web 预览模式，导入导出仅在桌面版可用。</p>}
           </div>
         </div>
       </aside>
@@ -181,9 +226,7 @@ const App: React.FC = () => {
             <h1 className="text-base font-semibold text-slate-800 mt-0.5">智能消息处理工作台</h1>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-xs px-2.5 py-1 rounded-full bg-[#e9f9ef] text-[#07c160] border border-[#b8ebcb]">
-              在线
-            </span>
+            <span className="text-xs px-2.5 py-1 rounded-full bg-[#e9f9ef] text-[#07c160] border border-[#b8ebcb]">在线</span>
             <Button variant="secondary" className="text-xs px-3 py-1">
               导出配置
             </Button>
@@ -241,9 +284,7 @@ const App: React.FC = () => {
                   <div key={item.title} className="border border-[#eceff3] bg-[#fcfcfd] rounded-2xl p-4 hover:border-[#d9dee5] transition-colors">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-semibold text-slate-800">{item.title}</h3>
-                      <span className="text-[10px] text-[#07c160] bg-[#e9f9ef] px-2 py-1 rounded-full border border-[#b8ebcb]">
-                        {item.tag}
-                      </span>
+                      <span className="text-[10px] text-[#07c160] bg-[#e9f9ef] px-2 py-1 rounded-full border border-[#b8ebcb]">{item.tag}</span>
                     </div>
                     <p className="text-xs text-slate-500 mt-2 leading-relaxed">{item.description}</p>
                   </div>
@@ -267,12 +308,10 @@ const App: React.FC = () => {
               <div className="bg-white rounded-3xl border border-[#e9ecef] p-6 shadow-[0_6px_20px_rgba(15,23,42,0.03)]">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-semibold">关键词回复</h3>
-                  <span className="text-[10px] text-[#07c160] bg-[#e9f9ef] px-2 py-1 rounded-full border border-[#b8ebcb]">
-                    文字/图片/视频/知识库
-                  </span>
+                  <span className="text-[10px] text-[#07c160] bg-[#e9f9ef] px-2 py-1 rounded-full border border-[#b8ebcb]">文字/图片/视频/知识库</span>
                 </div>
                 <div className="mt-4 space-y-3">
-                  {keywordReplyRules.map((rule) => (
+                  {keywordRules.map((rule) => (
                     <div key={rule.keyword} className="rounded-2xl border border-[#edf0f4] bg-[#fafbfc] p-3">
                       <div className="flex items-center justify-between">
                         <p className="text-sm font-medium text-slate-800">关键词：{rule.keyword}</p>
@@ -292,8 +331,8 @@ const App: React.FC = () => {
                 </div>
                 <div className="mt-4 grid grid-cols-2 gap-2">
                   {tableActions.map((item) => (
-                    <Button key={item} variant="secondary" className="text-xs px-2 py-1.5">
-                      {item}
+                    <Button key={item.label} variant="secondary" className="text-xs px-2 py-1.5" onClick={item.onClick}>
+                      {item.label}
                     </Button>
                   ))}
                 </div>
@@ -302,9 +341,7 @@ const App: React.FC = () => {
               <div className="bg-white rounded-3xl border border-[#e9ecef] p-6 shadow-[0_6px_20px_rgba(15,23,42,0.03)]">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-semibold">大模型配置</h3>
-                  <span className="text-[10px] text-[#07c160] bg-[#e9f9ef] px-2 py-1 rounded-full border border-[#b8ebcb]">
-                    API + 提示词
-                  </span>
+                  <span className="text-[10px] text-[#07c160] bg-[#e9f9ef] px-2 py-1 rounded-full border border-[#b8ebcb]">API + 提示词</span>
                 </div>
                 <div className="mt-4 space-y-2">
                   {modelConfigItems.map((item) => (
@@ -322,23 +359,26 @@ const App: React.FC = () => {
                   ))}
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-2">
-                  <Button variant="secondary" className="text-xs px-2 py-1.5">配置 API</Button>
-                  <Button variant="secondary" className="text-xs px-2 py-1.5">编辑提示词</Button>
-                  <Button variant="secondary" className="text-xs px-2 py-1.5">联调测试</Button>
+                  <Button variant="secondary" className="text-xs px-2 py-1.5" onClick={() => updateModelConfig({ apiKeyStatus: '已配置（可轮换）' })}>
+                    配置 API
+                  </Button>
+                  <Button variant="secondary" className="text-xs px-2 py-1.5" onClick={() => updateModelConfig({ promptTemplates: '3 套（客服/销售/运营）' })}>
+                    编辑提示词
+                  </Button>
+                  <Button variant="secondary" className="text-xs px-2 py-1.5" onClick={() => updateModelConfig({ provider: '豆包 Vision Pro + Chat（联调完成）' })}>
+                    联调测试
+                  </Button>
                 </div>
               </div>
 
               <div className="bg-white rounded-3xl border border-[#e9ecef] p-6 shadow-[0_6px_20px_rgba(15,23,42,0.03)]">
                 <h3 className="text-base font-semibold">启动策略</h3>
-                <p className="text-xs text-slate-500 mt-3 leading-relaxed">
-                  每次应用重启都会先删除 chat_history.db，确保模型记忆“物理失忆”，保持人设纯净并降低历史语气漂移。
-                </p>
+                <p className="text-xs text-slate-500 mt-3 leading-relaxed">每次应用重启都会先删除 chat_history.db，确保模型记忆“物理失忆”，保持人设纯净并降低历史语气漂移。</p>
               </div>
+
               <div className="bg-white rounded-3xl border border-[#e9ecef] p-6 shadow-[0_6px_20px_rgba(15,23,42,0.03)]">
                 <h3 className="text-base font-semibold">输出风格约束</h3>
-                <p className="text-xs text-slate-500 mt-3 leading-relaxed">
-                  通过负面提示词禁止过度表情、波浪号和模板化客服表达，让回复保持自然、简洁、可信。
-                </p>
+                <p className="text-xs text-slate-500 mt-3 leading-relaxed">通过负面提示词禁止过度表情、波浪号和模板化客服表达，让回复保持自然、简洁、可信。</p>
               </div>
             </div>
           </div>
