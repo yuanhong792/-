@@ -108,6 +108,22 @@ const knowledgeBaseOverview = [
   { label: '视频素材', value: '12' }
 ];
 
+
+const tableActions = [
+  '上传关键词表格',
+  '导出关键词表格',
+  '上传知识库表格',
+  '导出知识库表格'
+];
+
+const modelConfigItems = [
+  { label: '模型提供方', value: '豆包 Vision Pro + Chat' },
+  { label: 'API Key', value: '已配置（可轮换）' },
+  { label: '提示词模板', value: '3 套（客服/销售/运营）' }
+];
+
+const promptRules = ['禁用夸张语气词', '禁用连续表情', '保留简洁口语风格'];
+
 const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#f5f6f8] text-slate-900 flex">
@@ -274,7 +290,44 @@ const App: React.FC = () => {
                     </div>
                   ))}
                 </div>
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  {tableActions.map((item) => (
+                    <Button key={item} variant="secondary" className="text-xs px-2 py-1.5">
+                      {item}
+                    </Button>
+                  ))}
+                </div>
               </div>
+
+              <div className="bg-white rounded-3xl border border-[#e9ecef] p-6 shadow-[0_6px_20px_rgba(15,23,42,0.03)]">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold">大模型配置</h3>
+                  <span className="text-[10px] text-[#07c160] bg-[#e9f9ef] px-2 py-1 rounded-full border border-[#b8ebcb]">
+                    API + 提示词
+                  </span>
+                </div>
+                <div className="mt-4 space-y-2">
+                  {modelConfigItems.map((item) => (
+                    <div key={item.label} className="flex items-center justify-between text-xs border border-[#edf0f4] rounded-xl px-3 py-2 bg-[#fafbfc]">
+                      <span className="text-slate-500">{item.label}</span>
+                      <span className="text-slate-800 font-medium">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {promptRules.map((item) => (
+                    <span key={item} className="text-[10px] text-slate-600 bg-[#f3f4f6] border border-[#e5e7eb] px-2 py-1 rounded-full">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+                <div className="mt-4 grid grid-cols-3 gap-2">
+                  <Button variant="secondary" className="text-xs px-2 py-1.5">配置 API</Button>
+                  <Button variant="secondary" className="text-xs px-2 py-1.5">编辑提示词</Button>
+                  <Button variant="secondary" className="text-xs px-2 py-1.5">联调测试</Button>
+                </div>
+              </div>
+
               <div className="bg-white rounded-3xl border border-[#e9ecef] p-6 shadow-[0_6px_20px_rgba(15,23,42,0.03)]">
                 <h3 className="text-base font-semibold">启动策略</h3>
                 <p className="text-xs text-slate-500 mt-3 leading-relaxed">
