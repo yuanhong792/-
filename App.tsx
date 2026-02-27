@@ -3,118 +3,98 @@ import { Button } from './components/Button';
 
 const sidebarSections = [
   {
-    title: '欢迎使用',
-    icon: '🏠',
+    title: '项目导航',
+    icon: '🧭',
     items: [
-      { label: '欢迎使用', active: true },
-      { label: '智能客服配置' },
-      { label: '常见问题与回答' },
-      { label: '关键词触发回复' },
-      { label: '商品信息库' }
+      { label: '总览', active: true },
+      { label: '双核驱动架构' },
+      { label: '触发规则中心' },
+      { label: 'Vision 推理记录' }
     ]
   },
   {
-    title: '微信管理',
-    icon: '💬',
+    title: '自动化执行',
+    icon: '🤖',
     items: [
-      { label: '系统配置管理' },
-      { label: '微信账号配置' },
-      { label: '消息管理' },
-      { label: '群组管理' },
-      { label: '消息群发' },
-      { label: '自动添加群好友' },
-      { label: '统计分析' },
-      { label: '文件上传管理' }
+      { label: '屏幕轮询状态' },
+      { label: '聊天区域锚点' },
+      { label: '拟人输入策略' },
+      { label: '发送节奏控制' }
     ]
   },
   {
-    title: '企业微信管理',
-    icon: '🏢',
-    items: [{ label: '企业微信账号' }, { label: '企业侧消息' }]
-  },
-  {
-    title: '大模型设置',
+    title: '记忆与人设',
     icon: '🧠',
-    items: [{ label: '模型配置' }, { label: 'API设置' }]
+    items: [{ label: '会话记忆管理' }, { label: '负面提示词策略' }]
   },
   {
-    title: '账户与权限',
-    icon: '👤',
-    items: [{ label: '账号管理' }, { label: '角色权限' }]
+    title: '系统与日志',
+    icon: '🛡️',
+    items: [{ label: '审计日志' }, { label: '运行参数' }]
   }
 ];
 
 const quickCards = [
   {
-    title: '智能客服配置',
-    description: '配置FAQ、关键词触发、商品信息等智能回复能力。',
-    actions: ['开始配置']
+    title: '轻量级触发（OCR）',
+    description: '本地 OCR 高频轮询仅用于识别“画面变动”与“触发关键词”，降低 Vision API 调用成本。',
+    actions: ['配置轮询间隔', '设置关键词']
   },
   {
-    title: '微信管理',
-    description: '管理微信账号、消息、群组等核心功能模块。',
-    actions: ['系统配置', '群组管理']
+    title: '重量级理解（Vision）',
+    description: '触发后截图上传至豆包 Vision Pro，结合 UI 排版与文字内容进行多模态理解。',
+    actions: ['测试 Vision', '查看示例截图']
   },
   {
-    title: '大模型设置',
-    description: '配置AI大模型参数与fallback策略。',
-    actions: ['配置模型']
+    title: '拟人化执行链路',
+    description: '严格遵循“看屏幕 -> 思考 -> 模拟打字”的人类操作逻辑，避免 API 直发行为特征。',
+    actions: ['输入节奏预览']
   }
 ];
 
 const featureCards = [
   {
-    title: 'AI私信和群聊回复',
-    description:
-      '设置AI回复API并测试通过后，在【AI聊天】菜单开启自动回复。开启后避免键盘鼠标操作干扰。',
-    tag: '默认关闭'
+    title: '双核驱动调度器',
+    description: '轻量 OCR 做触发，重量 Vision 做理解，保证实时性与准确性兼得。',
+    tag: '核心能力'
   },
   {
-    title: 'AI朋友圈评论点赞',
-    description: '内置AI能力，首页进入“朋友圈”选择评论数量与范围即可启动。',
-    tag: '自动执行'
+    title: '物理失忆机制',
+    description: '每次启动先物理删除 chat_history.db，再创建全新 SQLite，避免历史“AI 味”污染。',
+    tag: '默认开启'
   },
   {
-    title: '私聊群发',
-    description: '需完成群数据库初始化（约1-10分钟），按菜单提示操作后使用。',
-    tag: '可配置'
+    title: '拟人化打字模型',
+    description: '通过 pyautogui + pyperclip 模拟快捷键与打字延迟，执行更接近真实人工。',
+    tag: '反审计优化'
   },
   {
-    title: '群聊群发',
-    description: '完成好友数据库初始化，并在设置中配置触发关键词。',
-    tag: '可配置'
-  },
-  {
-    title: '自动加好友/接受好友',
-    description: '在对应菜单内按提示设置策略即可执行。',
-    tag: '自动化'
-  },
-  {
-    title: '企业场景数字员工',
-    description: '支持公司内外事务自动化处理，形成多能力数字员工矩阵。',
-    tag: '企业级'
+    title: '负面提示词约束',
+    description: '屏蔽过度表情、波浪号与客服话术，输出风格更自然、更像真人。',
+    tag: 'Prompt 调优'
   }
 ];
 
-const highlights = [
-  '完全合法的Windows版微信机器人，核心使用RPA技术。',
-  '支持标准LLM接口，兼容 DeepSeek API / Gemini API。',
-  '自动加好友、批量发送、朋友圈AI评论点赞等全功能覆盖。',
-  '可作为企业数字员工或个人贴身助理。'
+const runtimeFlow = [
+  '① OCR 轮询聊天窗口，检测新消息与触发关键词。',
+  '② 触发后裁剪聊天区域截图，上传给豆包 Vision Pro。',
+  '③ Vision 输出意图理解 + 回复草案。',
+  '④ 本地规则层二次过滤语气与敏感表达。',
+  '⑤ pyautogui 执行粘贴、延迟、发送，完成拟人化回复。'
 ];
 
 const App: React.FC = () => {
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex">
-      <aside className="w-64 bg-white border-r border-slate-200 flex flex-col">
-        <div className="px-5 py-4 border-b border-slate-100">
+    <div className="min-h-screen bg-[#f5f6f8] text-slate-900 flex">
+      <aside className="w-72 bg-white border-r border-[#e9ecef] flex flex-col">
+        <div className="px-5 py-4 border-b border-[#f1f2f4]">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500 text-white font-bold flex items-center justify-center">
-              冰
+            <div className="w-10 h-10 rounded-2xl bg-[#07c160] text-white font-bold flex items-center justify-center shadow-sm">
+              微
             </div>
             <div>
-              <p className="font-semibold text-sm">冰石微信智能客服系统</p>
-              <p className="text-xs text-slate-400">RPA + AI 全栈能力</p>
+              <p className="font-semibold text-sm tracking-tight">WeChat-Vision-Bot</p>
+              <p className="text-xs text-slate-400">微信风格控制台</p>
             </div>
           </div>
         </div>
@@ -129,8 +109,10 @@ const App: React.FC = () => {
                 {section.items.map((item) => (
                   <button
                     key={item.label}
-                    className={`w-full text-left px-3 py-2 rounded-xl text-sm ${
-                      item.active ? 'bg-emerald-50 text-emerald-600' : 'text-slate-600 hover:bg-slate-100'
+                    className={`w-full text-left px-3 py-2.5 rounded-xl text-sm transition-all ${
+                      item.active
+                        ? 'bg-[#e9f9ef] text-[#07c160] font-medium border border-[#b8ebcb]'
+                        : 'text-slate-600 hover:bg-[#f6f7f9]'
                     }`}
                   >
                     {item.label}
@@ -141,51 +123,53 @@ const App: React.FC = () => {
           ))}
         </div>
         <div className="px-4 pb-4">
-          <div className="bg-slate-50 rounded-2xl p-4 text-xs text-slate-500">
-            已连接AI模型
-            <p className="text-lg font-semibold text-slate-900 mt-1">7 个</p>
+          <div className="bg-[#f7f8fa] rounded-2xl p-4 text-xs text-slate-500 border border-[#eceff3]">
+            当前运行模式
+            <p className="text-lg font-semibold text-slate-900 mt-1">双核协同</p>
             <Button className="mt-3 w-full text-sm" variant="secondary">
-              查看接口状态
+              查看运行日志
             </Button>
           </div>
         </div>
       </aside>
 
       <main className="flex-1 flex flex-col">
-        <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6">
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-slate-400">首页 / 欢迎使用</span>
+        <header className="h-16 bg-white border-b border-[#eef0f3] flex items-center justify-between px-6">
+          <div>
+            <span className="text-sm text-slate-400">首页 / WeChat-Vision-Bot</span>
+            <h1 className="text-base font-semibold text-slate-800 mt-0.5">智能消息处理工作台</h1>
           </div>
           <div className="flex items-center gap-3">
-            <button className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
-              🔔
-            </button>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-slate-200"></div>
-              <div>
-                <p className="text-sm font-semibold">系统管理员</p>
-                <p className="text-xs text-slate-400">企业版</p>
-              </div>
-            </div>
+            <span className="text-xs px-2.5 py-1 rounded-full bg-[#e9f9ef] text-[#07c160] border border-[#b8ebcb]">
+              在线
+            </span>
+            <Button variant="secondary" className="text-xs px-3 py-1">
+              导出配置
+            </Button>
           </div>
         </header>
 
         <section className="px-6 py-6">
-          <div className="bg-gradient-to-r from-slate-100 via-slate-50 to-slate-100 rounded-3xl border border-slate-200 p-8">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full border-4 border-emerald-500 text-emerald-500 flex items-center justify-center text-xl">
-                ✓
-              </div>
+          <div className="bg-white rounded-3xl border border-[#e9ecef] p-8 shadow-[0_6px_24px_rgba(15,23,42,0.04)]">
+            <div className="flex items-center justify-between gap-5 flex-wrap">
               <div>
-                <h1 className="text-2xl font-semibold">欢迎使用 冰石微信智能客服系统</h1>
-                <p className="text-sm text-slate-500 mt-1">个人微信已连接，连接的微信账号昵称：墨涵舞</p>
+                <h2 className="text-2xl font-semibold tracking-tight">协议零入侵的微信智能桌面助手</h2>
+                <p className="text-sm text-slate-500 mt-2 leading-relaxed max-w-3xl">
+                  本方案放弃协议层注入，转向纯视觉 + RPA 行为链路：以 OCR 做低成本触发，以 Vision 做高精度理解，再用拟人化输入完成回复。
+                </p>
+              </div>
+              <div className="bg-[#f7f8fa] border border-[#eceff3] rounded-2xl px-4 py-3 min-w-56">
+                <p className="text-xs text-slate-500">今日处理会话</p>
+                <p className="text-2xl font-semibold text-slate-900 mt-1">128</p>
+                <p className="text-xs text-[#07c160] mt-1">较昨日 +12%</p>
               </div>
             </div>
+
             <div className="mt-6 grid lg:grid-cols-3 gap-4">
               {quickCards.map((card) => (
-                <div key={card.title} className="bg-white rounded-2xl border border-slate-200 p-5">
+                <div key={card.title} className="bg-[#fafbfc] rounded-2xl border border-[#eceff3] p-5 hover:border-[#b8ebcb] transition-colors">
                   <h3 className="font-semibold text-slate-900">{card.title}</h3>
-                  <p className="text-xs text-slate-500 mt-2">{card.description}</p>
+                  <p className="text-xs text-slate-500 mt-2 leading-relaxed">{card.description}</p>
                   <div className="mt-4 flex gap-2 flex-wrap">
                     {card.actions.map((action) => (
                       <Button key={action} variant="secondary" className="text-xs px-3 py-1">
@@ -201,22 +185,22 @@ const App: React.FC = () => {
 
         <section className="px-6 pb-6">
           <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-6">
-            <div className="bg-white rounded-3xl border border-slate-200 p-6">
+            <div className="bg-white rounded-3xl border border-[#e9ecef] p-6 shadow-[0_6px_20px_rgba(15,23,42,0.03)]">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-lg font-semibold">功能说明</h2>
-                  <p className="text-xs text-slate-400">AI + RPA 全场景自动化</p>
+                  <h2 className="text-lg font-semibold">硬核技术实现</h2>
+                  <p className="text-xs text-slate-400">双核驱动 + 物理失忆 + 拟人化控制</p>
                 </div>
                 <Button variant="secondary" className="text-xs px-3 py-1">
-                  查看配置手册
+                  查看架构图
                 </Button>
               </div>
               <div className="grid md:grid-cols-2 gap-4">
                 {featureCards.map((item) => (
-                  <div key={item.title} className="border border-slate-200 rounded-2xl p-4">
+                  <div key={item.title} className="border border-[#eceff3] bg-[#fcfcfd] rounded-2xl p-4 hover:border-[#d9dee5] transition-colors">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-semibold text-slate-800">{item.title}</h3>
-                      <span className="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                      <span className="text-[10px] text-[#07c160] bg-[#e9f9ef] px-2 py-1 rounded-full border border-[#b8ebcb]">
                         {item.tag}
                       </span>
                     </div>
@@ -227,31 +211,27 @@ const App: React.FC = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="bg-white rounded-3xl border border-slate-200 p-6">
-                <h3 className="text-base font-semibold">系统亮点</h3>
+              <div className="bg-white rounded-3xl border border-[#e9ecef] p-6 shadow-[0_6px_20px_rgba(15,23,42,0.03)]">
+                <h3 className="text-base font-semibold">运行流程（人类操作逻辑）</h3>
                 <ul className="mt-4 space-y-3 text-sm text-slate-600">
-                  {highlights.map((item) => (
+                  {runtimeFlow.map((item) => (
                     <li key={item} className="flex gap-2">
-                      <span className="text-emerald-500">●</span>
+                      <span className="text-[#07c160]">●</span>
                       <span>{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="bg-white rounded-3xl border border-slate-200 p-6">
-                <h3 className="text-base font-semibold">快捷操作</h3>
-                <div className="mt-4 grid grid-cols-2 gap-3 text-xs">
-                  {['关键词触发回复', '微信管理', '个人设置', '朋友圈评论', '群发任务', '模型调用'].map((item) => (
-                    <Button key={item} variant="secondary" className="justify-start">
-                      {item}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-              <div className="bg-white rounded-3xl border border-slate-200 p-6">
-                <h3 className="text-base font-semibold">安全与合规</h3>
+              <div className="bg-white rounded-3xl border border-[#e9ecef] p-6 shadow-[0_6px_20px_rgba(15,23,42,0.03)]">
+                <h3 className="text-base font-semibold">启动策略</h3>
                 <p className="text-xs text-slate-500 mt-3 leading-relaxed">
-                  核心采用RPA驱动方式，无侵入、合规可控；支持权限与日志审计，适配企业级部署。
+                  每次应用重启都会先删除 chat_history.db，确保模型记忆“物理失忆”，保持人设纯净并降低历史语气漂移。
+                </p>
+              </div>
+              <div className="bg-white rounded-3xl border border-[#e9ecef] p-6 shadow-[0_6px_20px_rgba(15,23,42,0.03)]">
+                <h3 className="text-base font-semibold">输出风格约束</h3>
+                <p className="text-xs text-slate-500 mt-3 leading-relaxed">
+                  通过负面提示词禁止过度表情、波浪号和模板化客服表达，让回复保持自然、简洁、可信。
                 </p>
               </div>
             </div>
