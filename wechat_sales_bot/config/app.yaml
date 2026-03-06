@@ -1,0 +1,12 @@
+app:
+  name: wechat_sales_bot
+  loop_interval_sec: 2
+  screenshot_dir: logs/screenshots
+wechat:
+  process_name: WeChat.exe
+  min_window_width: 900
+  min_window_height: 600
+followup:
+  silence_days_to_disable_private_chat: 30
+  min_days_between_private_followups: 5
+  min_days_between_moment_interactions: 3
