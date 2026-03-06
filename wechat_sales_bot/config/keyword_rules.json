@@ -1,0 +1,18 @@
+{
+  "rules": [
+    {
+      "keyword": "价格",
+      "match_type": "contains",
+      "reply_text": "价格这块我先给你一个区间，具体还要看车型和现场检查结果。",
+      "enabled": true,
+      "priority": 10
+    },
+    {
+      "keyword": "地址",
+      "match_type": "contains",
+      "reply_text": "门店地址我发你，方便的话你到店前提前说一声，我给你安排。",
+      "enabled": true,
+      "priority": 20
+    }
+  ]
+}

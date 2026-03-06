@@ -1,0 +1,10 @@
+rules:
+  - stage: 新加未深聊
+    task_type: private_chat_followup
+    days_after_last_interaction: 2
+  - stage: 已咨询未推进
+    task_type: private_chat_followup
+    days_after_last_interaction: 4
+  - stage: 沉默客户
+    task_type: moments_only
+    days_after_last_interaction: 7
